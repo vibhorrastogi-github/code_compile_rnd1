@@ -24,34 +24,70 @@ public class ExecuteCommand {
 	public static void main(String[] args) throws IOException,
 			InterruptedException {
 
-		System.out.println(compile("javac", "Sample.java"));
+		try {
+			final ProcessBuilder pb = new ProcessBuilder();
+			pb.redirectErrorStream(true);
+
+			pb.command(new String[] { "cmd", "/c", "tt" });
+
+			// pb.redirectOutput(new File("Output.txt"));
+
+			StringBuilder result = new StringBuilder();
+
+			final Process p = pb.start();
+
+			readFromInputStream(p.getInputStream(), result);
+
+			System.out.println(result.toString());
+			// if (command.toString().contains("java")) {
+			// writeToOutputStream(p.getOutputStream());
+			// }
+
+			p.destroy();
+		} catch (final Throwable t) {
+			t.printStackTrace();
+		}
+
 	}
 
 	public static String codeCompileAndExecute(final String sourceCode,
 			final String fileName, final String lang) {
-		String result = null;
+		String result = "";
+
+		try {
+			final File sourceFile = new File(fileName + "." + lang);
+			sourceFile.createNewFile();
+			JOut.write(sourceFile, sourceCode);
+		} catch (final Exception e) {
+			return e.toString();
+		}
 
 		if (lang.equalsIgnoreCase("java")) {
-			try {
-				final File sourceFile = new File(fileName + ".java");
-				sourceFile.createNewFile();
-				JOut.write(sourceFile, sourceCode);
-			} catch (final Exception e) {
-				return e.toString();
-			}
-			result = compile("javac", fileName + ".java");
+
+			result = compile("javac " + fileName + "." + lang);
 			if (result.trim().length() <= 0) {
-				result = exec("java", fileName, "-Xmx10m");
+				result = exec("java " + fileName + " -Xmx10m", true,
+						"max_nbr.in");
+			}
+		} else if (lang.equalsIgnoreCase("c")) {
+
+			result = compile("tcc " + fileName + "." + lang);
+			System.out.println(result);
+			if (!result.contains("Error:")
+					&& new File(fileName + ".exe").exists()) {
+				result = exec(fileName, true, "random_nbr.in");
 			}
 		}
 		return result;
 	}
 
-	public static String compile(final String... command) {
+	public static String compile(final String command) {
 		final StringBuilder result = new StringBuilder();
 		try {
-			final ProcessBuilder pb = new ProcessBuilder(command);
+			final ProcessBuilder pb = new ProcessBuilder();
 			pb.redirectErrorStream(true);
+
+			pb.command(new String[] { "cmd", "/c", command });
 			final Process p = pb.start();
 			readFromInputStream(p.getInputStream(), result);
 			wait(p);
@@ -62,13 +98,20 @@ public class ExecuteCommand {
 		return result.toString().trim();
 	}
 
-	public static String exec(final String... command) {
+	public static String exec(final String command, boolean writeOutput,
+			String inputFile) {
 		final StringBuilder result = new StringBuilder();
 		try {
-			final ProcessBuilder pb = new ProcessBuilder(command);
+			final ProcessBuilder pb = new ProcessBuilder();
 			pb.redirectErrorStream(true);
+
+			pb.command(new String[] { "cmd", "/c", command });
+
 			final Process p = pb.start();
-			writeToOutputStream(p.getOutputStream());
+			if (writeOutput) {
+				writeToOutputStream(p.getOutputStream(), inputFile);
+			}
+
 			readFromInputStream(p.getInputStream(), result);
 			wait(p);
 			p.destroy();
@@ -88,14 +131,14 @@ public class ExecuteCommand {
 		br.close();
 	}
 
-	private static void writeToOutputStream(final OutputStream out)
-			throws IOException {
+	private static void writeToOutputStream(final OutputStream out,
+			String inputFile) throws IOException {
 
 		final BufferedWriter bw = new BufferedWriter(
 				new OutputStreamWriter(out));
 
-		final BufferedReader br = new BufferedReader(new FileReader(
-				"./in_out/max_nbr.in"));
+		final BufferedReader br = new BufferedReader(new FileReader("./in_out/"
+				+ inputFile));
 		String line = null;
 		while ((line = br.readLine()) != null) {
 			bw.write(line);

@@ -13,9 +13,14 @@ import java.io.IOException;
  */
 public class JOut {
 
-	public static void write(final File outputFile, final Object content) throws IOException {
+	public static void write(final File outputFile, final Object content)
+			throws IOException {
 		final FileWriter writer = new FileWriter(outputFile);
-		writer.write(content.toString());
+
+		final String sourceCode = content.toString();
+
+		System.out.println("writing source code: " + sourceCode);
+		writer.write(sourceCode);
 		writer.flush();
 		writer.close();
 	}
