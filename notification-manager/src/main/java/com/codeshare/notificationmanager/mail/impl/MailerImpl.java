@@ -68,9 +68,14 @@ public final class MailerImpl implements Mailer {
 				.getName() : mailRequest.getMdn());
 		mail.setDetails(mailRequest.getDetails());
 		mail.setTo(mailRequest.getTo());
+
 		mail.setSubject(contentProp.get(mailRequest.getType() + Const.dot
-				+ Const.subject)
-				+ mailRequest.getSubject());
+				+ Const.subject));
+
+		if (StringUtils.hasText(mailRequest.getSubject())
+				&& mailRequest.getSubject() != "null") {
+			mail.setSubject(mail.getSubject() + mailRequest.getSubject());
+		}
 
 		mail.setContent(contentProp.get(mailRequest.getType() + Const.dot
 				+ Const.content));
