@@ -1,12 +1,12 @@
 package com.codeshare.notificationmanager.model;
 
-
 public final class MailRequest {
 	private String mdn;
 	private String name;
 	private String type;
 	private String details;
 	private String to;
+	private String subject;
 
 	public MailRequest() {
 	}
@@ -86,10 +86,18 @@ public final class MailRequest {
 		this.to = to;
 	}
 
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
 	@Override
 	public String toString() {
-		return "MailRequest{" + "mdn='" + mdn + "', name='" + name
-				+ "', type='" + type + "', details='" + details + "', to='"
-				+ to + "', isAttachmentAvailable='}";
+		return "MailRequest [mdn=" + mdn + ", name=" + name + ", type=" + type
+				+ ", details=" + details + ", to=" + to + ", subject="
+				+ subject + "]";
 	}
 }

@@ -19,6 +19,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -54,6 +55,9 @@ public final class MailerImpl implements Mailer {
 	@Autowired
 	private ContentProp contentProp;
 
+	@Value("${common.logo.loc}")
+	private String commonLogoLoc;
+
 	public Mail prepare(final MailRequest mailRequest,
 			final List<MultipartFile> multipartFileList)
 			throws NotificationManagerException, IOException,
@@ -65,7 +69,9 @@ public final class MailerImpl implements Mailer {
 		mail.setDetails(mailRequest.getDetails());
 		mail.setTo(mailRequest.getTo());
 		mail.setSubject(contentProp.get(mailRequest.getType() + Const.dot
-				+ Const.subject));
+				+ Const.subject)
+				+ mailRequest.getSubject());
+
 		mail.setContent(contentProp.get(mailRequest.getType() + Const.dot
 				+ Const.content));
 		// if (StringUtils.hasText(contentProp.get(mailRequest.getType()
@@ -144,24 +150,24 @@ public final class MailerImpl implements Mailer {
 				message.setSubject(mail.getSubject());
 				final Map<String, Object> map = new HashMap<String, Object>();
 				map.put("mail", mail);
-				final String content = "/content/" + mail.getContent();
 				logger.debug("VelocityEngine: " + velocityEngine);
 				final String text = VelocityEngineUtils
-						.mergeTemplateIntoString(velocityEngine, content,
-								"UTF-8", map);
+						.mergeTemplateIntoString(velocityEngine,
+								mail.getContent(), "UTF-8", map);
 				logger.debug("text: {}", text);
 				message.setText(text, true);
 				String cid = "";
 				String image = "";
-				final String loc = contentProp.get(Const.common + Const.dot
-						+ Const.logo + Const.dot + Const.loc);
+				// final String logoLoc = contentProp.get(Const.common +
+				// Const.dot
+				// + Const.logo + Const.dot + Const.loc);
 				final String commonLogo = contentProp.get(Const.common
 						+ Const.dot + Const.logo);
 				logger.debug("commonLogo: " + commonLogo);
 				if (StringUtils.hasText(commonLogo)) {
 					cid = commonLogo.substring(0, commonLogo.indexOf(':'));
 					logger.debug("cid: " + cid);
-					image = loc
+					image = commonLogoLoc
 							+ commonLogo.substring(
 									(commonLogo.indexOf(':') + 1),
 									commonLogo.length());

@@ -11,10 +11,6 @@
 
 	<context:annotation-config />
 
-	<context:property-placeholder location="classpath:mailServer.properties" />
-
-	<util:properties id="contentProp" location="classpath:content.properties" />
-
 	<bean class="com.codeshare.notificationmanager.mail.impl.MailerImpl" />
 
 	<bean class="com.codeshare.notificationmanager.mail.impl.MailManagerImpl" />
@@ -35,8 +31,11 @@
 		class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
 		<property name="velocityProperties">
 			<value>
-				resource.loader=class
-				class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+				resource.loader=file
+				file.resource.loader.class=org.apache.velocity.runtime.resource.loader.FileResourceLoader
+				file.resource.loader.path=${velocity.content.path}
+				file.resource.loader.cache=false
+				prefer.file.system.access=true
 			</value>
 		</property>
 	</bean>
