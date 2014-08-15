@@ -2,12 +2,12 @@
 <commandBox>
 	<language name="c">
 		<compileCmd>c++ MySrcCode.c -o MySrcCode</compileCmd>
-		<executeCmd>MySrcCode.EXE</executeCmd>
+		<executeCmd>#PATH/MySrcCode.EXE</executeCmd>
 		<patternInSrcCode></patternInSrcCode>
 	</language>
 	<language name="cpp">
 		<compileCmd>c++ MySrcCode.cpp -o MySrcCode</compileCmd>
-		<executeCmd>MySrcCode.EXE</executeCmd>
+		<executeCmd>#PATH/MySrcCode.EXE</executeCmd>
 		<patternInSrcCode></patternInSrcCode>
 	</language>
 	<language name="java">
