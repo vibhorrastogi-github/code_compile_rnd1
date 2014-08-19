@@ -2,17 +2,17 @@
 <commandBox>
 	<language name="c">
 		<compileCmd>c++ MySrcCode.c -o MySrcCode</compileCmd>
-		<executeCmd>MySrcCode.EXE</executeCmd>
+		<executeCmd>sudo -u mycodeexec #PATH/MySrcCode</executeCmd>
 		<patternInSrcCode></patternInSrcCode>
 	</language>
 	<language name="cpp">
 		<compileCmd>c++ MySrcCode.cpp -o MySrcCode</compileCmd>
-		<executeCmd>MySrcCode.EXE</executeCmd>
+		<executeCmd>sudo -u mycodeexec #PATH/MySrcCode</executeCmd>
 		<patternInSrcCode></patternInSrcCode>
 	</language>
 	<language name="java">
 		<compileCmd>javac MySrcCode.java</compileCmd>
-		<executeCmd>java -cp . MySrcCode -Xmx10m</executeCmd>
+		<executeCmd>sudo -u mycodeexec java -cp . MySrcCode -Xmx10m</executeCmd>
 		<patternInSrcCode>public class MySrcCode</patternInSrcCode>
 	</language>
 </commandBox>
